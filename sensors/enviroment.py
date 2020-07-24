@@ -37,10 +37,15 @@ class enviroment:
             while True: #keep reading, unless keyboard is pressed
                 result = instance.read()
                 if result.is_valid(): #print datetime & sensor values
-                    print("Last valid input: " +     
-                        str(datetime.datetime.now()))
+                    timing = datetime.datetime.now()
+                    timing = timing.strftime("%d-%m-%Y_%H:%M:%S")
+                    print("Last valid input: " + timing)
                     print("Temperature: %-3.1f C" % result.temperature)
                     print("Humidity: %-3.1f %%" % result.humidity)
+                    Temperature = result.temperature
+                    Humidity = result.humidity
+                    csvGen = FileManager('csvGen.csv',f"{Temperature},{Humidity},{timing}\n")
+                    csvGen.logged()
                 time.sleep(0.5) #short delay between reads
 
         except KeyboardInterrupt:
