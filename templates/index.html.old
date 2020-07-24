@@ -1,0 +1,23 @@
+<html>
+    <head>
+        
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='script/index.js')}}"></script>
+        <script defer>
+            {% autoescape false %}
+            var data = showData({{dataToSend}});
+            
+            // document.getElementById("test").innerHTML="data"
+            {% endautoescape %}
+           
+        </script>
+      
+    </head>
+    <body> 
+        <h1>This are the stats for</h1>
+        
+        <p id='test'></p>
+        
+    </body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<script src="{{ url_for('static', filename = 'script/showchart.js') }}" defer></script>
+<script defer>
+    
+    
+</script>
+   <title>hmm</title>
+{% endblock %}
+
+{% block content %}
+<button id="button">asdf</button>
+<p id='test'>asdf</p>
+<p id='hmm'></p>
+<canvas id="myChart"></canvas>
+<script>
+    {% autoescape false %}
+    $(document).ready(function(){
+        // console.log({{temperature}})
+        // chartDifferentHoverMode.data.labels.push({{temperature}});
+        // chartDifferentHoverMode.update();
+        addData("chartDifferentHoverMode",{{temperature}},{{temperature}})
+        
+        console.log(Date.now())
+    // document.getElementById("test").innerHTML="data"
+    })
+    
+    {% endautoescape %}
+</script>
+{% endblock %}

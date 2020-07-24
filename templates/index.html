@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<script src="{{ url_for('static', filename = 'script/showchart.js') }}"></script>
+<script defer>
+    
+    
+</script>
+   <title>hmm</title>
+{% endblock %}
+
+{% block content %}
+<button id="button">asdf</button>
+<p id='test'>asdf</p>
+<p id='hmm'></p>
+<canvas id="myChart"></canvas>
+<script>
+    {% autoescape false %}
+    $(document).ready(function(){
+        var ctx = document.getElementById("myChart").getContext('2d')
+var data ={
+    labels:{{temperature}},
+    datasets: [{
+        label: 'Temperature',
+        backgroundColor: "#ffee00",
+        borderColor: "#ff0000",
+        data: {{temperature}},
+        fill: false,
+    },{
+        label: 'humidity',
+        backgroundColor: "#ffee00",
+        borderColor: "#ff0000",
+        data: {{humidity}},
+        fill: false,
+    }]
+}
+
+var options={
+    responsive: true,
+        title: {
+            display: true,
+            text: 'Chart.js Line Chart'
+        },
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+        },
+        hover: {
+            mode: 'nearest',
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Month'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Value'
+                }
+            }]
+        }
+    }
+        var showData = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+        showData.data.labels.push([{{temperature}}])
+        showData.data.datasets[0].data.push({{temperature}})
+        showData.data.datasets.forEach(function(dataset) {
+            dataset.data.push(dataset);
+        });
+        showData.update()
+        
+
+        
+    })
+    
+    {% endautoescape %}
+</script>
+{% endblock %}

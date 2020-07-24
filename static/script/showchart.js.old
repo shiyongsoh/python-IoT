@@ -1,0 +1,89 @@
+Chart.defaults.global.hover.mode = 'nearest';
+var data = {}
+function addData(chart, label, data) {
+    console.log(chart)
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data);
+    });
+    chart.update();
+}
+
+// var data = {
+// {"temperature": ["23", "24", "25", "23", "21", "22", "24", "26", "27", "26"]}
+// {"humidity": ["55", "57", "60", "59", "62", "66", "70", "68", "66", "65"]}
+// }
+
+//  data ={
+//     labels:["23", "24", "25", "23", "21", "22", "24", "26", "27", "26"],
+//     datasets:[{
+//         label:"temperature",
+//         backgroundColor: "#ff0000",
+//         borderColor: "#fff000",
+//         data:["23", "24", "25", "23", "21", "22", "24", "26", "27", "26"],
+//         fill:false
+//     },{
+//         label:"temperature",
+//         backgroundColor: "#ff0000",
+//         borderColor: "#fff000",
+//         data:["23", "24", "25", "23", "21", "22", "24", "26", "27", "26"],
+//         fill:false
+//     }]
+    
+    
+// }
+
+var ctx = document.getElementById('myChart').getContext('2d'); //defines the html element with the unqiue element IDs
+var chartDifferentHoverMode = new Chart(ctx, {
+    type: "line",
+    data: {
+            // labels:["23", "24", "25", "23", "21", "22", "24", "26", "27", "26"],
+            labels:[],
+            datasets:[{
+                label:"temperature",
+                backgroundColor: "#ff0000",
+                borderColor: "#fff000",
+                data:[],
+                fill:false
+            },{
+                label:"humidity",
+                backgroundColor: "#ff000f",
+                borderColor: "#f0fe0f",
+                data:["55", "57", "60", "59", "62", "66", "70", "68", "66", "65"],
+                fill:false
+            }]
+        },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'Chart.js Line Chart'
+        },
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+        },
+        hover: {
+            mode: 'nearest',
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'time'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Value'
+                }
+            }]
+        }
+    }
+})
+
+console.log("showChart.js is working")

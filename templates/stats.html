@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block head %}
+<script src="{{ url_for('static', filename = 'script/statsForCom.js') }}" defer></script>
+{% endblock %}
+
+
+{% block content %}
+<canvas id="myChart" class="w-50 h-50"></canvas>
+<script>
+    {% autoescape false %}
+    $('document').ready(function(){
+        setTimeout(refreshComStats,5000)
+        function refreshComStats(){
+            location.reload()
+        }
+        var ctx2 = document.getElementById('myChart').getContext('2d');
+
+        // console.log(ctx)
+        
+
+
+        var data = {
+            datasets: [{
+                backgroundColor : "rgba(141, 66, 245, 1)",
+                data: [{{cpuUsage}},{{RAM}}],
+                label:[
+                    "CPU Usage",
+                    "RAM"
+                ],
+                barPercentage: 0.5,
+            }],
+            
+
+            // These labels appear in the legend and in the tooltips when hovering different arcs
+            labels: [
+                'Cpu Usage',
+                'RAM'
+            ]
+        };
+
+        var options = {
+            backgroundColor : "rgba(141, 66, 245, 0.1)",
+            hoverBackgroundColor : 'rgba(49, 212, 92, 1)',
+            responsive:true
+        };
+
+        var myPieChart = new Chart(ctx2, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+
+
+        function showdata(data){
+            console.log("showData is working")
+            var newHTML = document.open("text/html","data");
+            newHTML.write(data)
+            newHTML.close()
+            console.log(data)
+        }
+
+
+    })
+    {% endautoescape %}
+</script>
+current CPU usage = {{cpuUsage}}<br>
+Core Count = {{cpuCoreCount}}
+
+
+<div id="stats"></div>
+<!-- CPU Fans speed = {{cpuFans}} -->
+
+<!-- CPU temperature={{cpuTemps}} -->
+<!-- CPU Statistics = {{cpuStats}} -->
+
+RAM usage = {{RAM}}
+
+
+
+{% endblock %}
