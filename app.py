@@ -5,19 +5,22 @@ from time import ctime
 
 app=Flask(__name__)
 
+# from sensors import enviroment # uncomment this in raspberry pi
+
 @app.route('/')
 def index():
     from controller.infoPanel import infoPanel as displays
-    temp, humid  = displays.info()
+    # sensors.getMoisture()
+    temp, humid, time  = displays.info()
     # print(hmm)
     # hmm = str(hmm)
     temperature = json.dumps({"temperature":temp})
     humidity = json.dumps({"humidity":humid})
     print(temperature)
     print(humidity)
-    dataToSend = temperature, humidity
+    dataToSend = temperature, humidity, time
     dataToSend = json.dumps({"dataToSend":dataToSend})
-    return render_template("index.html",temperature = temp,humidity = humid,dataToSend =dataToSend, time = ctime())
+    return render_template("index.html",temperature = temp,humidity = humid,dataToSend =dataToSend, time=time,ctime = ctime())
 
 @app.route('/stats')
 def stats():
