@@ -3,6 +3,7 @@
 import RPi.GPIO as GPIO
 import dht11
 import time
+from datetime import date
 from time import sleep
 import datetime
 import random
@@ -26,6 +27,7 @@ ax1 = ''
 xs = []
 ys = []
 
+todayWeather = date.today().strftime("%d_%m_%Y")
 
 #uncomment to do it on actual pi
 GPIO.setwarnings(False)
@@ -35,6 +37,7 @@ instance = dht11.DHT11(pin=21) #read data using pin 21
 
 GPIO.setup(24,GPIO.OUT) # LED
 GPIO.setup(23,GPIO.OUT) #set GPIO 23 as output
+GPIO.setup(18,GPIO.OUT) #set GPIO 18 as output
 GPIO.output(24,0)
 #computer stats
 #fig = plt.figure()
@@ -57,6 +60,21 @@ numberofRecords = 0
 #-------------------test code end-----------------------------------#
 #print(f'number of records {numberofRecords}')
 #write to file in csv
+def telegram_bot_sendtext(bot_message):
+
+   bot_token = '1198305127:AAFa0jgBMqI956ceOh4zStQDyxO4F1AWILo'
+   bot_chatID = '696975904'
+   send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
+   url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+
+#    response = requests.get(   send_text)
+   response = requests.post(url, data={'chat_id': bot_chatID, 'text': bot_message})
+
+   return response.json()
+def buzzOnce():
+    GPIO.output(18,1) #output logic high/'1'
+    sleep(1) #delay 1 second
+    GPIO.output(18,0) #output logic low/'0'
 def likelinessToRain(humidity ,temperature):
     humidity = float(humidity)
     temperature = float(temperature)
@@ -69,11 +87,14 @@ def likelinessToRain(humidity ,temperature):
         return "it is likely to rain"
     if Td <=55:
         print("It looks dry and comfortable now")
+        return "It looks dry and comfortable now"
     elif Td >=55 and Td <= 65:
         print("Its getting abit humid")
+        telegram_bot_sendtext("Its getting abit humid,Might rain")
         return "Its getting abit humid"
     else:
         print("Time to sweat.....")
+        buzzOnce()
         return "Time to sweat....."
 
 def createMenu(dishes, price):
@@ -129,7 +150,7 @@ class enviroment:
                 
                 Humidity = result.humidity
                 humidityArray.append(Humidity)
-                csvGen = FileManager('weather.csv',f"{Temperature},{humidityArray}\n")
+                csvGen = FileManager(todayWeather,f"{Temperature},{humidityArray}\n")
                 csvGen.logged()
                 
                 if Temperature >=27.1:
@@ -166,7 +187,7 @@ class enviroment:
 
 
 def HistoryGraph():
-    readRecord = FileManager('weather.csv')
+    readRecord = FileManager(todayWeather)
     hmm = readRecord.read()
     tempToShow = []
     humidToShow = []
@@ -207,6 +228,10 @@ def sensors(i=None):
     ax1.plot(humidityArray)
     
     ax1.legend(["temperature","humidity"])
+    if len(temperatureArray) >= 10:
+        del temperatureArray[0]
+    if len(humidityArray) >= 10:
+        del humidityArray[0]
     print(temperatureArray)
    
     sleep(2)
@@ -219,12 +244,15 @@ def tempStats():
     if(len(temperatureArray) >= 1):
         plt.title(likelinessToRain(humidityArray[-1] ,temperatureArray[-1]))
     ax1 = fig.add_subplot(1,1,1)
-    xs.clear()
-    ys.clear()
+    print(f"temperatureArray{len(temperatureArray)}")
+    print(len(humidityArray))
+    
+    
+    temperatureArray.clear()
+    humidityArray.clear()
     if plt.fignum_exists(0):
         print("Is running temperature")
         plt.close('all')
-
     else:
         print("Is not running")
         print("temperature running")
